@@ -10,10 +10,20 @@ module KineticTask
 
       # Stores the initial hash used to configure the adapter
       attr_accessor :spec
+      attr_accessor :opennms_attrs
 
       def initialize(spec={})
         # Store the spec
         @spec = spec
+        @opennms_attrs = [
+          'nodeid',
+          'nodelabel',
+          'noticeid',
+          'eventid',
+          'time',
+          'severity',
+          'message'
+        ]
       end
 
       #########################################################################
@@ -52,6 +62,11 @@ module KineticTask
         {
           'Notification' => {
             'Node ID' => '<%=@notification["nodeid"]%>',
+            'Node Label' => '<%=@notification["nodelabel"]%>',
+            'Notice ID' => '<%=@notification["noticeid"]%>',
+            'Event ID' => '<%=@notification["eventid"]%>',
+            'Notification Time' => '<%=@notification["time"]%>',
+            'Severity' => '<%=@notification["severity"]%>',
             'Message' => '<%=@notification["message"]%>'
           }
         }
@@ -70,7 +85,7 @@ module KineticTask
         bindings['notification'] = {}
 
         ### Populating node ID and message.
-        ['nodeid','message'].each do |field|
+        @opennms_attrs.each do |field|
           bindings['notification'][field] = data[field];
         end
 
@@ -91,10 +106,19 @@ module KineticTask
       def run_tree_handler(bodyContent, httpRequest)
         data = httpRequest.getParameterMap
 
-        source_data = {
-          "nodeid" => data.get("nodeid")[0],
-          "message" => data.get("message")[0]
-        }
+        source_data = Hash.new
+
+        @opennms_attrs.each do |attr|
+          source_data[attr] = data.get(attr)[0]
+        end
+        #   "nodeid" => data.get("nodeid")[0],
+        #   "nodelabel" => data.get("nodelabel")[0],
+        #   "noticeid" => data.get("noticeid")[0],
+        #   "eventid" => data.get("eventid")[0],
+        #   "time" => data.get("time")[0],
+        #   "severity" => data.get("severity")[0],
+        #   "message" => data.get("message")[0]
+        # }
 
         # Check that the source data contains the value we are using for the source id.
         if data["nodeid"].nil?
@@ -105,7 +129,7 @@ module KineticTask
         # string, so we'll compact the hash into JSON.
         {
           "source_data" => JSON.generate(source_data),
-          "source_id"   => data.get("nodeid")[0]
+          "source_id"   => data.get("noticeid")[0]
         }
       end
 
