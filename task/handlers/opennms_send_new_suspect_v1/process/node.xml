@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="opennms_send_new_suspect" name="OpenNMS Send New Suspect Event" schema_version="1.0" version="1">
+  <author>support@kineticdata.com</author>
+  <description>This handler allows you to send new suspect events to OpenNMS.</description>
+  <helpurl></helpurl>
+  <visible>true</visible>
+  <deferrable>false</deferrable>
+  <parameters>
+    <parameter id="interface" label="IP Interface" required="true" tooltip="The IP interface you want discovered in OpenNMS." />
+    <parameter id="source" label="Event Source" required="true" tooltip="The source that you want this event identified from in OpenNMS.">KineticTask</parameter>
+  </parameters>
+  <handler name="opennms_send_new_suspect" version="1">
+    <infos>
+      <info name="host">&lt;%= @info['host'] %&gt;</info>
+    </infos>
+    <parameters>
+      <parameter name="interface">&lt;%= @parameters['interface'] %&gt;</parameter>
+      <parameter name="source">&lt;%= @parameters['source'] %&gt;</parameter>
+    </parameters>
+  </handler>
+  <results format="xml">
+  </results>
+</taskDefinition>

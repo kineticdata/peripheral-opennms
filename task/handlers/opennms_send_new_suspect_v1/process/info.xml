@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taskInfo version="1.0">
+  <info name="host" description="The IP or DNS host for the target OpenNMS installation."></info>
+  <info name="enable_debugging" description="Enable advanced debugging for troubleshooting, set to 'Yes'">No</info>
+</taskInfo>
